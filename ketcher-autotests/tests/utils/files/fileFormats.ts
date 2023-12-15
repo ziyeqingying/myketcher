@@ -2797,8 +2797,285 @@ const reagentsBelowAndAboveArrowCml = `<?xml version="1.0" ?>
 `;
 
 const reagentsBelowAndAboveArrowCdx = `VmpDRDAxMDAEAwIBAAAAAAAAAAAAAAAAAAAAAAUIBAAAAB4AGggCAAMAGwgCAAQAAAEkAAAAAgACAOn9BQBBcmlhbAMA6f0PAFRpbWVzIE5ldyBSb21hbgADMgAIAP///////wAAAAAAAP//AAAAAP////8AAAAA//8AAAAA/////wAAAAD/////AAD//wGAAAAAABAIAgABAA8IAgABAAOABAAAAASABQAAAAACCACTwO0ApEvDAAAABIAGAAAAAAIIANi87QBbNPcAAAAEgAcAAAAAAggAv7/eAJNM3QAAAASACAAAAAACCAAWxAsBWzT3AAAABIAJAAAAAAIIAI7mCwGkS8MAAAAEgAoAAAAAAggAQsAaAVhd3QAAAAWAGQAAAAQGBAAHAAAABQYEAAUAAAAABgIAAgAAAAWAGgAAAAQGBAAFAAAABQYEAAkAAAAAAAWAGwAAAAQGBAAJAAAABQYEAAoAAAAABgIAAgAAAAWAHAAAAAQGBAAKAAAABQYEAAgAAAAAAAWAHQAAAAQGBAAIAAAABQYEAAYAAAAABgIAAgAAAAWAHgAAAAQGBAAGAAAABQYEAAcAAAAAAAAAA4ALAAAABIAMAAAAAAIIAJKA7gCki7sBAAAEgA0AAAAAAggA2HzuAFp07wEAAASADgAAAAACCAC/f98AkozVAQAABIAPAAAAAAIIABaEDAFadO8BAAAEgBAAAAAAAggAjqYMAaSLuwEAAASAEQAAAAACCABCgBsBWJ3VAQAABYAfAAAABAYEAA4AAAAFBgQADAAAAAAGAgACAAAABYAgAAAABAYEAAwAAAAFBgQAEAAAAAAABYAhAAAABAYEABAAAAAFBgQAEQAAAAAGAgACAAAABYAiAAAABAYEABEAAAAFBgQADwAAAAAABYAjAAAABAYEAA8AAAAFBgQADQAAAAAGAgACAAAABYAkAAAABAYEAA0AAAAFBgQADgAAAAAAAAADgBIAAAAEgBMAAAACBAIABwArBAIAAwAAAggAAADwAACAVwEGgAAAAAAAAggAAADwAACAVwEjCAEAAAAHGQACAAAAAwBgAMgAAAACAAMAIADIAAAATkgzAAAAAAAAA4AUAAAABIAVAAAAAgQCABEAKwQCAAEAAAIIAADACwEAAFwBBoAAAAAAAAIIAADACwEAAFwBIwgBAAAABw8AAQAAAAMAYADIAAAAQ2xIAAAAAAAAIYAWAAAABAIQAAFA/gB0wKoBAUD+AAAADgE3CgIAAAAvCgIAAAAgCgIAyggxCgIAMwI1CgIAAQAwCgIAGQAHAgwAdMCqAQFA/gAAAAAACAIMAAAADgEBQP4AAAAAAAAADYAAAAAADoAAAAAAAQwEAAQAAAACDAQACwAAAAUMCAASAAAAFAAAAAQMBAAWAAAAAAAAAAAAAAAAAA==`;
+const rGroupV3000Mol = `
+Marvin  02211216212D          
+
+0  0  0     0  0            999 V3000
+M  V30 BEGIN CTAB
+M  V30 COUNTS 8 7 0 0 0
+M  V30 BEGIN ATOM
+M  V30 1 C 7.6835 -7.3342 0 0
+M  V30 2 C 9.0171 -6.5642 0 0
+M  V30 3 C 10.3508 -7.3342 0 0
+M  V30 4 C 11.6845 -6.5642 0 0
+M  V30 5 C 13.0181 -7.3342 0 0
+M  V30 6 C 14.3518 -6.5642 0 0
+M  V30 7 C 15.6855 -7.3342 0 0
+M  V30 8 R# 17.0191 -6.5642 0 0 RGROUPS=(1 1)
+M  V30 END ATOM
+M  V30 BEGIN BOND
+M  V30 1 1 1 2
+M  V30 2 1 2 3
+M  V30 3 1 3 4
+M  V30 4 1 4 5
+M  V30 5 1 5 6
+M  V30 6 1 6 7
+M  V30 7 1 7 8
+M  V30 END BOND
+M  V30 END CTAB
+M  V30 BEGIN RGROUP 1
+M  V30 RLOGIC 0 0 >0
+M  V30 BEGIN CTAB
+M  V30 COUNTS 3 2 0 0 0
+M  V30 BEGIN ATOM
+M  V30 1 C 9.0283 -18.013 0 0 ATTCHPT=1
+M  V30 2 Br 10.362 -18.7831 0 0
+M  V30 3 O 9.0283 -16.473 0 0
+M  V30 END ATOM
+M  V30 BEGIN BOND
+M  V30 1 1 1 2
+M  V30 2 2 1 3
+M  V30 END BOND
+M  V30 END CTAB
+M  V30 BEGIN CTAB
+M  V30 COUNTS 6 5 0 0 0
+M  V30 BEGIN ATOM
+M  V30 1 C 13.7114 -17.3173 0 0 ATTCHPT=1
+M  V30 2 C 15.0451 -18.0874 0 0
+M  V30 3 F 16.1608 -16.9865 0 0
+M  V30 4 F 14.6601 -19.6326 0 0
+M  V30 5 F 16.3029 -18.8293 0 0
+M  V30 6 O 13.7114 -15.7773 0 0
+M  V30 END ATOM
+M  V30 BEGIN BOND
+M  V30 1 1 1 2
+M  V30 2 1 2 3
+M  V30 3 1 2 4
+M  V30 4 1 2 5
+M  V30 5 2 1 6
+M  V30 END BOND
+M  V30 END CTAB
+M  V30 END RGROUP
+M  END
+`;
+
+const ketWithProperties = `{
+    "root": {
+        "nodes": [
+            {
+                "$ref": "mol0"
+            },
+            {
+                "$ref": "mol1"
+            }
+        ]
+    },
+    "mol0": {
+        "type": "molecule",
+        "properties": [
+            { "mol0_key": "mol0_value" }
+        ],
+        "atoms": [
+            {
+                "label": "C",
+                "location": [
+                    15.632207454738978,
+                    -5.647548743464719,
+                    0
+                ]
+            },
+            {
+                "label": "C",
+                "location": [
+                    15.62850411466491,
+                    -4.652451256535281,
+                    0
+                ]
+            },
+            {
+                "label": "C",
+                "location": [
+                    14.620294802067825,
+                    -5.634637098341615,
+                    0
+                ]
+            },
+            {
+                "label": "C",
+                "location": [
+                    14.617792545261022,
+                    -4.652451256535281,
+                    0
+                ]
+            }
+        ],
+        "bonds": [
+            {
+                "type": 1,
+                "atoms": [0, 1]
+            },
+            {
+                "type": 1,
+                "atoms": [0, 2]
+            },
+            {
+                "type": 1,
+                "atoms": [1, 3]
+            },
+            {
+                "type": 1,
+                "atoms": [2, 3]
+            }
+        ]
+    },
+    "mol1": {
+        "type": "molecule",
+        "properties": [
+            { "mol1_key": "mol1_value" }
+        ],
+        "atoms": [
+            {
+                "label": "C",
+                "location": [
+                    17.17437421436393,
+                    -5.507470415521405,
+                    0
+                ]
+            },
+            {
+                "label": "C",
+                "location": [
+                    18.175625785636072,
+                    -5.507470415521405,
+                    0
+                ]
+            },
+            {
+                "label": "C",
+                "location": [
+                    17.675050188048687,
+                    -4.642529584478595,
+                    0
+                ]
+            }
+        ],
+        "bonds": [
+            {
+                "type": 1,
+                "atoms": [0, 1]
+            },
+            {
+                "type": 1,
+                "atoms": [0, 2]
+            },
+            {
+                "type": 1,
+                "atoms": [1, 2]
+            }
+        ]
+    }
+}`;
+
+const V2000ABS = `
+
+SMMXDraw11221220012D
+
+43 47  0  0  1  0  0  0  0  0999 V2000
+ 11.3404   -8.0663    0.0000 C   0  0  1  0  0  0  0  0  0  0  0  0
+ 11.3404   -9.0463    0.0000 C   0  0  1  0  0  0  0  0  0  0  0  0
+ 11.8904   -9.7763    0.0000 C   0  0  1  0  0  0  0  0  0  0  0  0
+ 12.7404  -10.1463    0.0000 C   0  0  2  0  0  0  0  0  0  0  0  0
+ 12.1104  -10.8063    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+ 13.1304  -11.0763    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+ 13.7404  -10.0363    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+ 14.4204   -9.4363    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+ 14.7604   -8.4663    0.0000 C   0  0  1  0  0  0  0  0  0  0  0  0
+ 14.3804   -7.5063    0.0000 C   0  0  1  0  0  0  0  0  0  0  0  0
+ 13.6204   -6.9263    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+ 12.7704   -7.3763    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+ 11.8204   -7.2563    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+ 11.3804   -6.3663    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+ 13.0504   -8.3163    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+ 15.3904   -7.7263    0.0000 C   0  0  3  0  0  0  0  0  0  0  0  0
+ 16.2704   -8.1363    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+ 16.1004   -7.0963    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+ 14.5804   -6.6063    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+ 15.3204   -9.1263    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+ 11.2704  -10.5163    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+ 11.6504  -11.3863    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+ 11.0504  -12.1663    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+ 12.6004  -11.5363    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+ 10.5904   -9.4063    0.0000 C   0  0  1  0  0  0  0  0  0  0  0  0
+ 10.5904  -10.2463    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  9.7704  -10.6963    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  9.7704  -11.6463    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  8.9304  -10.2463    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  8.1204  -10.6963    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  8.1204  -11.6463    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  7.3104  -12.1263    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  6.4704  -11.6763    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  6.4704  -10.7263    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  7.3104  -10.2463    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  9.8004   -9.0163    0.0000 C   0  0  2  0  0  0  0  0  0  0  0  0
+  9.8004   -8.0663    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  9.0004   -9.3663    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+ 11.1304   -9.9163    0.0000 H   0  0  0  0  0  0  0  0  0  0  0  0
+ 10.9404   -7.1663    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+ 10.0004   -7.0463    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+  9.5904   -6.1463    0.0000 O   0  0  0  0  0  0  0  0  0  0  0  0
+  9.4204   -7.7963    0.0000 C   0  0  0  0  0  0  0  0  0  0  0  0
+2  1  1  0  0  0  0
+3  2  1  0  0  0  0
+4  3  1  0  0  0  0
+4  5  1  6  0  0  0
+5  6  1  0  0  0  0
+6  4  1  0  0  0  0
+7  4  1  0  0  0  0
+8  7  1  0  0  0  0
+8  9  1  0  0  0  0
+9 10  1  0  0  0  0
+10 11  1  0  0  0  0
+11 12  2  0  0  0  0
+12 13  1  0  0  0  0
+13  1  1  0  0  0  0
+14 13  2  0  0  0  0
+15 12  1  0  0  0  0
+16 10  1  0  0  0  0
+17 16  1  0  0  0  0
+18 16  1  0  0  0  0
+9 16  1  0  0  0  0
+10 19  1  6  0  0  0
+9 20  1  6  0  0  0
+3 21  1  1  0  0  0
+22 21  1  0  0  0  0
+23 22  2  0  0  0  0
+24 22  1  0  0  0  0
+25  2  1  0  0  0  0
+25 26  1  1  0  0  0
+27 26  1  0  0  0  0
+28 27  2  0  0  0  0
+29 27  1  0  0  0  0
+30 29  1  0  0  0  0
+31 30  2  0  0  0  0
+32 31  1  0  0  0  0
+33 32  2  0  0  0  0
+33 34  1  0  0  0  0
+34 35  2  0  0  0  0
+35 30  1  0  0  0  0
+25 36  1  0  0  0  0
+36 37  1  0  0  0  0
+37  1  1  0  0  0  0
+36 38  1  1  0  0  0
+2 39  1  6  0  0  0
+1 40  1  1  0  0  0
+41 40  1  0  0  0  0
+42 41  2  0  0  0  0
+43 41  1  0  0  0  0
+M  END
+`;
 
 export const FILE_TEST_DATA = {
+  V2000ABS,
   utfFile,
   benzeneArrowBenzeneReagentNh3,
   benzeneArrowBenzeneReagentHclV2000,
@@ -2828,4 +3105,6 @@ export const FILE_TEST_DATA = {
   expandedAndContractedFg,
   reagentsBelowAndAboveArrowCml,
   reagentsBelowAndAboveArrowCdx,
+  rGroupV3000Mol,
+  ketWithProperties,
 };

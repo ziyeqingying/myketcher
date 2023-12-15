@@ -17,6 +17,11 @@ import {
   selectBond,
   BondTypeName,
   clickOnAtom,
+  SaltsAndSolvents,
+  selectSaltsAndSolvents,
+  LeftPanelButton,
+  dragMouseTo,
+  selectLeftPanelButton,
 } from '@utils';
 
 test.describe('Open Ketcher', () => {
@@ -101,6 +106,23 @@ test.describe('Open Ketcher', () => {
     await takeEditorScreenshot(page);
     await page.getByTestId('close-icon').click();
     await pressButton(page, STRUCTURE_LIBRARY_BUTTON_NAME);
+  });
+
+  test('When drag an abbreviation preview is hide', async ({ page }) => {
+    /*
+    Test case: EPMLSOPKET-8941 
+    Description:
+    Open 'Custom Templates'
+    Select some 'Functional Groups' or 'Salts and Solvents'
+    Click on abbreviation and drag to another place on canvas
+    */
+    const x = 700;
+    const y = 200;
+    await selectSaltsAndSolvents(SaltsAndSolvents.Isobutanol, page);
+    await clickInTheMiddleOfTheScreen(page);
+    await selectLeftPanelButton(LeftPanelButton.HandTool, page);
+    await page.getByText('isobutanol').click();
+    await dragMouseTo(x, y, page);
   });
 
   test('Adding template to canvas', async ({ page }) => {
@@ -193,7 +215,11 @@ test.describe('Open Ketcher', () => {
     await page.getByRole('button', { name: 'Edit' }).click();
     await page.getByRole('tab', { name: 'Template Library' }).click();
     await page.getByRole('button', { name: 'Aromatics (18)' }).click();
-    await page.getByTitle('Azulene').click();
+    await page
+      .getByTitle('Azulene')
+      .locator('svg')
+      .filter({ hasText: 'Created with Raphaël 2.3.0' })
+      .click();
     await clickOnTheCanvas(page, 0, 1);
     const point = { x: -50, y: 0 };
     await selectAtomInToolbar(AtomButton.Nitrogen, page);

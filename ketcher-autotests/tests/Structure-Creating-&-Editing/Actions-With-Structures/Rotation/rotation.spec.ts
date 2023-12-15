@@ -1,8 +1,14 @@
 import { expect, test } from '@playwright/test';
 import {
+  STRUCTURE_LIBRARY_BUTTON_NAME,
+  TemplateLibrary,
+  clickInTheMiddleOfTheScreen,
   getCoordinatesOfTheMiddleOfTheScreen,
   openFileAndAddToCanvas,
+  pressButton,
+  selectUserTemplate,
   takeEditorScreenshot,
+  takePageScreenshot,
   waitForPageInit,
   waitForRender,
 } from '@utils';
@@ -554,5 +560,29 @@ test.describe('Rotation snapping', () => {
     await page.keyboard.press('Control+a');
     await page.getByTestId('floating-tools').isVisible();
     await takeEditorScreenshot(page);
+  });
+
+  test('Rotate tool -  Verify that the rotation tool works correctly when used with different objects and shapes', async ({
+    page,
+  }) => {
+    /*
+      Test case: EPMLSOPKET-13002
+      Description:
+      Select different objects and shapes
+      Activate the rotation mode.
+      Rotate the selected object.
+    */
+    const coordinatesForRotation = {
+      x: 800,
+      y: 800,
+    };
+    await pressButton(page, STRUCTURE_LIBRARY_BUTTON_NAME);
+    await page.getByRole('tab', { name: 'Template Library' }).click();
+    await page.getByRole('button', { name: 'D-Amino Acids' }).click();
+    await selectUserTemplate(TemplateLibrary.ALADAlanine, page);
+    await clickInTheMiddleOfTheScreen(page);
+    await page.keyboard.press('Control+a');
+    await rotateToCoordinates(page, coordinatesForRotation);
+    await takePageScreenshot(page);
   });
 });

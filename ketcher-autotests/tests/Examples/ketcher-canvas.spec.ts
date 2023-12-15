@@ -16,9 +16,13 @@ import {
   BondTool,
   selectNestedTool,
   waitForPageInit,
+  clickOnBond,
+  BondType,
+  LeftPanelButton,
+  selectLeftPanelButton,
 } from '@utils';
 
-test.describe('Drawing atom, Benzene ring, Single and Double Bond', () => {
+test.describe('Drawing atom, Benzene ring, Single and Double and Triple Bond', () => {
   test.beforeEach(async ({ page }) => {
     await waitForPageInit(page);
   });
@@ -65,5 +69,20 @@ test.describe('Drawing atom, Benzene ring, Single and Double Bond', () => {
     await selectNestedTool(page, BondTool.DOUBLE);
 
     await clickInTheMiddleOfTheScreen(page);
+  });
+
+  test('Triple Bond is drawn at the one angles when click on Template and Chain atoms', async ({
+    page,
+  }) => {
+    /* Test case: EPMLSOPKET-11846
+    Description:
+    Add Templates on canvas and Chain
+    Select Triple Bond and click on each atom of Template and Chain
+    */
+    await selectNestedTool(page, BondTool.TRIPPLE);
+    await clickInTheMiddleOfTheScreen(page);
+    await clickOnAtom(page, 'C', 1);
+    await selectLeftPanelButton(LeftPanelButton.Chain, page);
+    await clickOnBond(page, BondType.TRIPLE, 1);
   });
 });

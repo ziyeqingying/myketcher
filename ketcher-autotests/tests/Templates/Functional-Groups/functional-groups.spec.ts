@@ -30,6 +30,7 @@ import {
   selectDropdownTool,
   clickOnAtom,
   moveOnAtom,
+  selectOption,
 } from '@utils';
 import { getAtomByIndex } from '@utils/canvas/atoms';
 let point: { x: number; y: number };
@@ -736,5 +737,63 @@ test.describe('Functional Groups', () => {
     await waitForRender(page, async () => {
       await page.mouse.click(x, y);
     });
+  });
+
+  test('Lookup Abbreviations - Verify Abbreviated Structure Replacement via Drag-and-Drop', async ({
+    page,
+  }) => {
+    /*
+    Test case: EPMLSOPKET-16927
+    Description:
+    Open Ketcher and load a molecule containing atoms and bonds.
+    Hover the mouse cursor over an atom.
+    Activate the abbreviation lookup window by typing first letters of Functional Group
+    Drag the selected abbreviation and drop it onto a specific atom.
+    */
+    await selectFunctionalGroups(FunctionalGroups.Indole, page);
+    await clickInTheMiddleOfTheScreen(page);
+    await resetCurrentTool(page);
+
+    await clickInTheMiddleOfTheScreen(page, 'right');
+    await waitForRender(page, async () => {
+      await page.getByText('Expand Abbreviation').click();
+    });
+
+    await moveOnAtom(page, 'C', 0);
+    await page.getByTestId('canvas').hover();
+    await resetCurrentTool(page);
+
+    await clickInTheMiddleOfTheScreen(page);
+    await page.keyboard.type('Ind');
+    await selectOption(page, 'Indole');
+    await moveOnAtom(page, 'C', 0);
+    await page.getByTestId('canvas').hover();
+  });
+
+  test('Lookup Abbreviations - Verify Rolling Back Atom Replacement on Lookup Activation', async ({
+    page,
+  }) => {
+    /*
+    Test case: EPMLSOPKET-16929
+    Description:
+    Open Ketcher and load a molecule containing atoms and bonds.
+    Hover the mouse cursor over an atom.
+    Activate the abbreviation lookup window by typing an abbreviation's first letter that matches an atom shortcut.
+    */
+    await selectFunctionalGroups(FunctionalGroups.Indole, page);
+    await clickInTheMiddleOfTheScreen(page);
+    await resetCurrentTool(page);
+
+    await clickInTheMiddleOfTheScreen(page, 'right');
+    await waitForRender(page, async () => {
+      await page.getByText('Expand Abbreviation').click();
+    });
+
+    await moveOnAtom(page, 'C', 0);
+    await page.getByTestId('canvas').hover();
+    await resetCurrentTool(page);
+
+    await clickInTheMiddleOfTheScreen(page);
+    await page.keyboard.type('In');
   });
 });

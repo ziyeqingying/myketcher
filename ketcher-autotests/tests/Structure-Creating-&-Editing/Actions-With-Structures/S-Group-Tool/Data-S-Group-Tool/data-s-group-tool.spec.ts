@@ -413,4 +413,20 @@ test.describe('Data S-Group tool', () => {
     await openFileAndAddToCanvas('KET/benzene-with-data-s-group.ket', page);
     await clickInTheMiddleOfTheScreen(page);
   });
+
+  test('Tooltip appears on the structure with delay', async ({ page }) => {
+    /*
+      Test case: EPMLSOPKET-10070
+      Description: 
+      Create structure and make Data S-Group with 'Field name' and 'Field value'
+      With 'Selection tool' hover over created S-Group
+    */
+    await openFileAndAddToCanvas('KET/benzene-with-data-s-group.ket', page);
+    await page.keyboard.press('Control+a');
+    await selectLeftPanelButton(LeftPanelButton.S_Group, page);
+    await fillFieldByPlaceholder(page, 'Enter name', 'TrustName');
+    await fillFieldByPlaceholder(page, 'Enter value', '88');
+    await pressButton(page, 'Apply');
+    await page.getByTestId('canvas').hover();
+  });
 });

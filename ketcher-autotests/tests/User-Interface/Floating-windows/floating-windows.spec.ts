@@ -13,6 +13,10 @@ import {
   pasteFromClipboard,
   pasteFromClipboardAndAddToCanvas,
   waitForLoad,
+  clickOnBond,
+  BondType,
+  selectLeftPanelButton,
+  LeftPanelButton,
 } from '@utils';
 
 async function openFileViaClipboard(filename: string, page: Page) {
@@ -173,5 +177,19 @@ test.describe('Floating windows', () => {
       pressButton(page, 'Open as New Project');
     });
     await clickInTheMiddleOfTheScreen(page);
+  });
+
+  test('Change window confirm to standard Ketcher modal', async ({ page }) => {
+    /*
+      Test case: EPMLSOPKET-4015
+      Description:
+      Try to open/paste file/string with unsupported S-group type
+    */
+      await openFileAndAddToCanvas(
+        'Rxn-V2000/structure-with-s-groups-with-unsupported-s-group-type.rxn',
+        page,
+      );
+    await selectLeftPanelButton(LeftPanelButton.S_Group, page);
+    await clickOnBond(page, BondType.SINGLE, 2);
   });
 });

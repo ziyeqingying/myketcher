@@ -2,11 +2,13 @@
 import { test, expect, Page } from '@playwright/test';
 import {
   AtomButton,
+  BondType,
   DELAY_IN_SECONDS,
   FILE_TEST_DATA,
   RingButton,
   TopPanelButton,
   clickInTheMiddleOfTheScreen,
+  clickOnBond,
   delay,
   drawBenzeneRing,
   openFileAndAddToCanvas,
@@ -405,5 +407,42 @@ test.describe('Open/Save/Paste files', () => {
 
     await getPreviewForSmiles(page, 'Daylight SMILES');
     await page.getByText('Warnings').click();
+  });
+
+  test('Ketcher should be able to open mol200 file with sgroup attachment point and then save the struct to .ket format', async ({
+    page,
+  }) => {
+    /*
+      Test case: EPMLSOPKET-16889
+      Description: 
+      Open file ketcher mol
+      Save file in ket format
+     */
+    await pasteFromClipboardAndAddToCanvas(
+      page,
+      FILE_TEST_DATA.functionalGroupsExpandedContractedV3000,
+    );
+    await clickInTheMiddleOfTheScreen(page);
+    await selectTopPanelButton(TopPanelButton.Save, page);
+    await clickOnFileFormatDropdown(page);
+    await page.getByRole('option', { name: 'Ket Format' }).click();
+    await page.getByRole('button', { name: 'Save', exact: true }).click();
+  });
+
+  test('able to open .ket file with the "attachmentPoints" and display attachment point correctly', async ({
+    page,
+  }) => {
+    /*
+      Test case: EPMLSOPKET-16890
+      Description:
+      Load file ketcher ket
+      Check all elements
+     */
+    await pasteFromClipboardAndAddToCanvas(
+      page,
+      FILE_TEST_DATA.ketWithProperties,
+    );
+    await clickInTheMiddleOfTheScreen(page);
+    await clickOnBond(page, BondType.SINGLE, 0);
   });
 });

@@ -1,5 +1,5 @@
 /* eslint-disable no-magic-numbers */
-import { expect, test } from '@playwright/test';
+import { Page, expect, test } from '@playwright/test';
 import {
   takeEditorScreenshot,
   openFileAndAddToCanvas,
@@ -22,7 +22,41 @@ import {
   takeLeftToolbarScreenshot,
   waitForPageInit,
   waitForRender,
+  selectFunctionalGroups,
+  FunctionalGroups,
+  drawFGAndDrag,
+  selectDropdownTool,
+  takePageScreenshot,
+  moveMouseToTheMiddleOfTheScreen,
+  resetCurrentTool,
+  drawBenzeneRing,
+  clickOnTheCanvas,
+  getCoordinatesOfTheMiddleOfTheScreen,
+  clickOnBond,
+  STRUCTURE_LIBRARY_BUTTON_NAME,
+  selectUserTemplate,
+  TemplateLibrary,
+  selectTopPanelButton,
+  TopPanelButton,
+  AtomButton,
+  selectAtomInToolbar,
 } from '@utils';
+
+async function moveElement(
+  page: Page,
+  atomLabel: string,
+  atomNumber: number,
+  xShiftForElement = 350,
+  yShiftForElement = 150,
+) {
+  const { x, y } = await getCoordinatesOfTheMiddleOfTheScreen(page);
+  const pointXToMoveElement = x - xShiftForElement;
+  const pointYToMoveElement = y - yShiftForElement;
+
+  await page.getByTestId('hand').click();
+  await moveOnAtom(page, atomLabel, atomNumber);
+  await dragMouseTo(pointXToMoveElement, pointYToMoveElement, page);
+}
 
 test.describe('Selection tools', () => {
   test.beforeEach(async ({ page }) => {
@@ -449,5 +483,290 @@ test.describe('Selection tools', () => {
     */
     await page.getByTestId('select-rectangle').click();
     await expect(page).toHaveScreenshot();
+  });
+
+  test('Tooltip appears after dragging abbreviation and stay on canvas until release click', async ({
+    page,
+  }) => {
+    /*
+    Test case: EPMLSOPKET-12968
+    Description:
+    Add 'Functional Groups' and 'Salts and Solvents' on canvas
+    Choose 'Selection tool' (ESC) click on abbreviation and immediately drag before tooltip appears
+    */
+    const SHIFT = 50;
+    await selectFunctionalGroups(FunctionalGroups.Cbz, page);
+    await clickInTheMiddleOfTheScreen(page);
+    await drawFGAndDrag(FunctionalGroups.Boc, SHIFT, page);
+    await selectDropdownTool(page, 'select-rectangle', 'select-lasso');
+    await takePageScreenshot(page);
+  });
+
+  test('Select Palette - UI verification', async ({ page }) => {
+    /*
+    Test case: EPMLSOPKET-1335
+    Description:
+    Click the 'Lasso Selection Tool' arrow for the drop-down list and choose the Lasso Selection Tool.
+    Move with mouse over the Selection tool button.
+    Click the arrow for drop-down list and choose the Fragment Selection Tool.
+    Move with mouse over the Selection tool button.
+    Select any other (not Selection) tool.
+    Move with mouse over the Fragment Selection Tool.
+    */
+    await page.getByTestId('select-rectangle-in-toolbar').hover();
+    await takeLeftToolbarScreenshot(page);
+    await selectDropdownTool(page, 'select-rectangle', 'select-lasso');
+    await clickInTheMiddleOfTheScreen(page);
+    await page.keyboard.press('Shift+Tab');
+    await page.keyboard.press('Shift+Tab');
+    await clickInTheMiddleOfTheScreen(page);
+    await page.getByTestId('select-rectangle-in-toolbar').hover();
+    await page.keyboard.press('Shift+Tab');
+    await page.keyboard.press('Shift+Tab');
+    await expect(page.getByTestId('select-fragment')).toBeVisible();
+    await takeLeftToolbarScreenshot(page);
+  });
+
+  test('Select Palette - Empty canvas selection', async ({ page }) => {
+    /*
+    Test case: EPMLSOPKET-1336
+    Description:
+    Click the empty canvas.
+    Press with mouse and drag on the canvas.
+    Click arrow for the Selection Tool and choose the Rectangle selection tool.
+    Click the empty canvas.
+    Press with mouse and drag on the canvas.
+    */
+    await clickInTheMiddleOfTheScreen(page);
+    await moveMouseToTheMiddleOfTheScreen(page);
+    await clickInTheMiddleOfTheScreen(page);
+    await selectLeftPanelButton(LeftPanelButton.RectangleSelection, page);
+    await moveMouseToTheMiddleOfTheScreen(page);
+    await clickInTheMiddleOfTheScreen(page);
+    await takeLeftToolbarScreenshot(page);
+  });
+
+  test('Selection and hover mouse', async ({ page }) => {
+    /*
+    Test case: EPMLSOPKET-16941
+    Description:
+    Add any structure from functional groups
+    Expand structure
+    Select structure using any selecting tool
+    Hover mouse over the structure
+    */
+    await selectFunctionalGroups(FunctionalGroups.Cbz, page);
+    await clickInTheMiddleOfTheScreen(page);
+
+    await resetCurrentTool(page);
+
+    await clickInTheMiddleOfTheScreen(page, 'right');
+    await waitForRender(page, async () => {
+      await page.getByText('Expand Abbreviation').click();
+    });
+
+    await selectLeftPanelButton(LeftPanelButton.RectangleSelection, page);
+    await clickInTheMiddleOfTheScreen(page);
+    await page.getByText('Cbz').hover();
+  });
+
+  test('Verify Smooth Movement Beyond Canvas Boundaries', async ({ page }) => {
+    /*
+    Test case: EPMLSOPKET-16934
+    Description:
+    Open Ketcher.
+    Add a Benzene ring to the canvas.
+    Select one of the Benzene rings and move it beyond the canvas boundaries.
+    */
+    await drawBenzeneRing(page);
+    await selectLeftPanelButton(LeftPanelButton.RectangleSelection, page);
+    await clickInTheMiddleOfTheScreen(page);
+    const xOffsetFromCenter = -1000;
+    await selectRing(RingButton.Cycloheptane, page);
+    await clickOnTheCanvas(page, xOffsetFromCenter, 0);
+    await takePageScreenshot(page);
+  });
+
+  test('Check that movement of structure not ceases when it reaches the boundaries of canvas', async ({
+    page,
+  }) => {
+    /*
+    Test case: EPMLSOPKET-16932
+    Description:
+    Open Ketcher
+    Add two Benzene rings on canvas
+    Select one of them and move to the edges of canvas
+    */
+    await drawBenzeneRing(page);
+    const xOffsetFromCenter = -450;
+    await selectRing(RingButton.Cycloheptane, page);
+    await clickOnTheCanvas(page, xOffsetFromCenter, 0);
+    await takePageScreenshot(page);
+  });
+
+  test('Verify Smooth and Continuous Movement Near Canvas Edge', async ({
+    page,
+  }) => {
+    /*
+    Test case: EPMLSOPKET-16933
+    Description:
+    Add a Benzene ring to the canvas.
+    Select the Benzene ring and move it towards the edge of the canvas.
+    */
+    const shiftForTheEdgeOfTheCanvas = 550;
+    await drawBenzeneRing(page);
+    await moveElement(page, 'C', 0, shiftForTheEdgeOfTheCanvas, 0);
+    await takePageScreenshot(page);
+  });
+
+  test('Verify Smooth Movement of Structures at Various Canvas Edges', async ({
+    page,
+  }) => {
+    /*
+    Test case: EPMLSOPKET-16935
+    Description:
+    Add two Benzene rings to the canvas.
+    Select one of the Benzene rings and move it towards different edges of the canvas (top, bottom, left, right).
+    */
+    await drawBenzeneRing(page);
+    const xOffsetFromCenter = -300;
+    const yOffsetFromCenter = -500;
+    await selectRing(RingButton.Cycloheptane, page);
+    await clickOnTheCanvas(page, yOffsetFromCenter, xOffsetFromCenter);
+    await takePageScreenshot(page);
+  });
+
+  test('Verify Behavior with Rapid Mouse Movements Near Canvas Edge', async ({
+    page,
+  }) => {
+    /*
+    Test case: EPMLSOPKET-16936
+    Description:
+    Add a Benzene ring to the canvas.
+    Select the Benzene ring.
+    Rapidly move the mouse cursor towards the canvas edge.
+    */
+    await drawBenzeneRing(page);
+    await selectRing(RingButton.Benzene, page);
+    await resetCurrentTool(page);
+    await selectLeftPanelButton(LeftPanelButton.HandTool, page);
+    await dragMouseTo(100, 600, page);
+    await takePageScreenshot(page);
+  });
+
+  test('Verify Behavior with Slow Mouse Movements Near Canvas Edge', async ({
+    page,
+  }) => {
+    /*
+    Test case: EPMLSOPKET-16937
+    Description:
+    Add a Benzene ring to the canvas.
+    Select the Benzene ring.
+    Slowly move the mouse cursor towards the canvas edge.
+    */
+    await drawBenzeneRing(page);
+    await selectRing(RingButton.Benzene, page);
+    await resetCurrentTool(page);
+    await selectLeftPanelButton(LeftPanelButton.HandTool, page);
+    await dragMouseTo(400, 400, page);
+    await resetCurrentTool(page);
+
+    await selectLeftPanelButton(LeftPanelButton.HandTool, page);
+    await dragMouseTo(200, 600, page);
+    await resetCurrentTool(page);
+
+    await selectLeftPanelButton(LeftPanelButton.HandTool, page);
+    await dragMouseTo(150, 600, page);
+    await takePageScreenshot(page);
+  });
+
+  test('Fragment Selection tool - Drawing selection contours correctly for hovered structures', async ({
+    page,
+  }) => {
+    /*
+    Test case: EPMLSOPKET-17664
+    Description:
+    Click on the ""Fragment selection"" 
+    Click on the structure on the canvas
+    Hover over the mouse to the structure
+    Verify atoms are drawn above the bonds
+    */
+    await pressButton(page, STRUCTURE_LIBRARY_BUTTON_NAME);
+    await page.getByRole('tab', { name: 'Template Library' }).click();
+    await page.getByRole('button', { name: 'D-Amino Acids' }).click();
+    await selectUserTemplate(TemplateLibrary.ALADAlanine, page);
+    await clickInTheMiddleOfTheScreen(page);
+    await page.getByTestId('ketcher-canvas').hover();
+    await selectDropdownTool(page, 'select-rectangle', 'select-fragment');
+    await clickInTheMiddleOfTheScreen(page);
+    await clickOnBond(page, BondType.SINGLE, 0);
+    await clickOnAtom(page, 'C', 0);
+    await takePageScreenshot(page);
+  });
+
+  test('Fragment Selection tool - Undo/Redo moving of structures', async ({
+    page,
+  }) => {
+    /*
+    Test case: EPMLSOPKET-1360
+    Description: 
+    Drag any structure to any other place on the canvas.
+    Click the 'Undo/Redo' button on the toolbar.
+    Drag the 'plus sign'/'reaction arrow' to any place on the canvas.
+    Click the 'Undo/Redo' button on the toolbar multiple times.
+    */
+    await pressButton(page, STRUCTURE_LIBRARY_BUTTON_NAME);
+    await page.getByRole('tab', { name: 'Template Library' }).click();
+    await page.getByRole('button', { name: 'D-Amino Acids' }).click();
+    await selectUserTemplate(TemplateLibrary.ALADAlanine, page);
+    await clickInTheMiddleOfTheScreen(page);
+    await selectTopPanelButton(TopPanelButton.Undo, page);
+    await selectTopPanelButton(TopPanelButton.Redo, page);
+    await selectLeftPanelButton(LeftPanelButton.ReactionPlusTool, page);
+    await clickInTheMiddleOfTheScreen(page);
+    await selectLeftPanelButton(LeftPanelButton.ArrowOpenAngleTool, page);
+    await clickInTheMiddleOfTheScreen(page);
+    await selectTopPanelButton(TopPanelButton.Undo, page);
+    await selectTopPanelButton(TopPanelButton.Redo, page);
+    await takePageScreenshot(page);
+  });
+
+  test('Rectangle Selection tool - Undo/Redo moving of structures', async ({
+    page,
+  }) => {
+    /* Test case: EPMLSOPKET-1353
+    Description:
+    Drag any atom of the structure to any other place on the canvas.
+    Click the 'Undo' button on the toolbar.
+    Click the 'Redo' button on the toolbar.
+    Drag the plus sign to any place on the canvas.
+    Drag the reaction arrow to any place on the canvas.
+    Select a part or the whole reaction and drag it to any place on the canvas.
+    Click the 'Undo' button on the toolbar multiple times.
+    Click the 'Redo' button on the toolbar multiple times.
+    */
+    await pressButton(page, STRUCTURE_LIBRARY_BUTTON_NAME);
+    await page.getByRole('tab', { name: 'Template Library' }).click();
+    await page.getByRole('button', { name: 'D-Amino Acids' }).click();
+    await selectUserTemplate(TemplateLibrary.ARGDArginine, page);
+    await clickInTheMiddleOfTheScreen(page);
+    await selectAtomInToolbar(AtomButton.Hydrogen, page);
+    await clickInTheMiddleOfTheScreen(page);
+
+    const shift = 50;
+    const { x, y } = await getCoordinatesOfTheMiddleOfTheScreen(page);
+    const coordinatesWithShift = x + shift;
+    await dragMouseTo(coordinatesWithShift, y, page);
+    await resetCurrentTool(page);
+
+    await selectTopPanelButton(TopPanelButton.Undo, page);
+    await selectTopPanelButton(TopPanelButton.Redo, page);
+    await selectLeftPanelButton(LeftPanelButton.ReactionPlusTool, page);
+    await clickInTheMiddleOfTheScreen(page);
+    await selectLeftPanelButton(LeftPanelButton.ArrowOpenAngleTool, page);
+    await clickInTheMiddleOfTheScreen(page);
+    await selectTopPanelButton(TopPanelButton.Undo, page);
+    await selectTopPanelButton(TopPanelButton.Redo, page);
+    await takePageScreenshot(page);
   });
 });

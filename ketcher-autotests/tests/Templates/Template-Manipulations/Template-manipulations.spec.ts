@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { test, expect } from '@playwright/test';
 import {
   takeEditorScreenshot,
@@ -353,10 +352,9 @@ test.describe('Template Manupulations', () => {
     Click the Zoom Out button several times.
     */
     await page.getByTestId('zoom-input').click();
-    await page.getByTestId('zoom-in').click({
-      clickCount: 2,
-    });
-    await page.getByTestId('zoom-out').click({
+    await page.getByRole('button', { name: 'Zoom in Ctrl+=' }).click();
+    await page.getByRole('button', { name: 'Zoom in Ctrl+=' }).click();
+    await page.getByRole('button', { name: 'Zoom out Ctrl+_' }).click({
       clickCount: 3,
     });
     await clickInTheMiddleOfTheScreen(page);
@@ -371,12 +369,10 @@ test.describe('Template Manupulations', () => {
     await clickOnTheCanvas(page, 1, 0);
     await takePageScreenshot(page);
     await page.getByTestId('zoom-input').click();
-    await page.getByTestId('zoom-in').click({
-      clickCount: 2,
-    });
-    await page.getByTestId('zoom-out').click({
-      clickCount: 2,
-    });
+    await page.getByRole('button', { name: 'Zoom in Ctrl+=' }).click();
+    await page.getByRole('button', { name: 'Zoom in Ctrl+=' }).click();
+    await page.getByRole('button', { name: 'Zoom out Ctrl+_' }).click();
+    await page.getByRole('button', { name: 'Zoom out Ctrl+_' }).click();
   });
 
   test('Save as *.mol file', async ({ page }) => {
@@ -465,6 +461,7 @@ test.describe('Template Manupulations', () => {
     await clickOnAtom(page, 'C', anyAtom);
     await selectRing(RingButton.Cyclopentadiene, page);
   });
+
   test('Double cyclopentadiene ring - if all bonds are single', async ({
     page,
   }) => {
