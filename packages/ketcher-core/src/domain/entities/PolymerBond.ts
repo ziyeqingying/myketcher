@@ -1,11 +1,13 @@
-import { DrawingEntity } from 'domain/entities/DrawingEntity';
-import { PolymerBondRenderer } from 'application/render/renderers/PolymerBondRenderer';
-import { Vec2 } from 'domain/entities/vec2';
-import { BaseMonomer } from './BaseMonomer';
 import { BaseRenderer } from 'application/render/renderers/BaseRenderer';
-import { AttachmentPointName } from 'domain/types';
+import { PolymerBondRenderer } from 'application/render/renderers/PolymerBondRenderer';
 import { BackBoneBondSequenceRenderer } from 'application/render/renderers/sequence/BackBoneBondSequenceRenderer';
 import { PolymerBondSequenceRenderer } from 'application/render/renderers/sequence/PolymerBondSequenceRenderer';
+import { BaseMonomer } from 'domain/entities/BaseMonomer';
+import { DrawingEntity } from 'domain/entities/DrawingEntity';
+import { RNABase } from 'domain/entities/RNABase';
+import { Sugar } from 'domain/entities/Sugar';
+import { Vec2 } from 'domain/entities/vec2';
+import { AttachmentPointName } from 'domain/types';
 
 export class PolymerBond extends DrawingEntity {
   public secondMonomer?: BaseMonomer;
@@ -75,33 +77,51 @@ export class PolymerBond extends DrawingEntity {
       : this.firstMonomer;
   }
 
-  public static get backBoneChainAttachmentPoints() {
-    return [AttachmentPointName.R1, AttachmentPointName.R2];
-  }
-
-  public get isBackBoneChainConnection() {
-    return !this.isSideChainConnection;
-  }
-
-  public get isSideChainConnection() {
-    const firstMonomerAttachmentPoint =
-      this.firstMonomer.getAttachmentPointByBond(this);
-    const secondMonomerAttachmentPoint =
-      this.secondMonomer?.getAttachmentPointByBond(this);
-
-    if (!firstMonomerAttachmentPoint || !secondMonomerAttachmentPoint) {
-      return false;
+  public get isBackboneChainConnection(): boolean {
+    // Variants:
+    // • Not RNA base [R2] — [R1] Not RNA base
+    // • Not RNA base [R1] — [R2] Not RNA base
+    // • Sugar [R3] — [R1] RNA base
+    // • [R1] RNA base — Sugar [R3]
+    if (!this.secondMonomer) {
+      return true;
     }
 
-    return (
-      !(
-        PolymerBond.backBoneChainAttachmentPoints.includes(
-          firstMonomerAttachmentPoint,
-        ) &&
-        PolymerBond.backBoneChainAttachmentPoints.includes(
-          secondMonomerAttachmentPoint,
-        )
-      ) || firstMonomerAttachmentPoint === secondMonomerAttachmentPoint
-    );
+    const firstMonomer = this.firstMonomer;
+    const secondMonomer = this.secondMonomer;
+    const firstMonomerAttachmentPoint =
+      firstMonomer.getAttachmentPointByBond(this);
+    const secondMonomerAttachmentPoint =
+      secondMonomer.getAttachmentPointByBond(this);
+    if (!firstMonomerAttachmentPoint || !secondMonomerAttachmentPoint) {
+      return true;
+    }
+
+    const thereAreR1AndR2 =
+      (firstMonomerAttachmentPoint === AttachmentPointName.R2 &&
+        secondMonomerAttachmentPoint === AttachmentPointName.R1) ||
+      (firstMonomerAttachmentPoint === AttachmentPointName.R1 &&
+        secondMonomerAttachmentPoint === AttachmentPointName.R2);
+    const thereAreNotRNABase =
+      !(firstMonomer instanceof RNABase) || !(secondMonomer instanceof RNABase);
+    if (thereAreR1AndR2 && thereAreNotRNABase) {
+      return true;
+    }
+
+    let thereAreSugarWithR3AndRNABaseWithR1 =
+      firstMonomer instanceof Sugar &&
+      firstMonomerAttachmentPoint === AttachmentPointName.R3 &&
+      secondMonomer instanceof RNABase &&
+      secondMonomerAttachmentPoint === AttachmentPointName.R1;
+    thereAreSugarWithR3AndRNABaseWithR1 ||=
+      secondMonomer instanceof Sugar &&
+      secondMonomerAttachmentPoint === AttachmentPointName.R3 &&
+      firstMonomer instanceof RNABase &&
+      firstMonomerAttachmentPoint === AttachmentPointName.R1;
+    return thereAreSugarWithR3AndRNABaseWithR1;
+  }
+
+  public get isSideChainConnection(): boolean {
+    return !this.isBackboneChainConnection;
   }
 }
