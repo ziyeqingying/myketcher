@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ***************************************************************************/
+
+import MoleculeOrStructurePreview from 'components/shared/MoleculeOrStructurePreview';
 import MonomerPreview from 'components/shared/MonomerPreview';
 import PresetPreview from 'components/shared/PresetPreview';
 import { useAppSelector } from 'hooks';
@@ -31,6 +33,10 @@ export const Preview = () => {
 
   if (!preview?.monomer) {
     return null;
+  }
+
+  if (preview?.monomer?.props.isMicromoleculeFragment) {
+    return <MoleculeOrStructurePreview className="polymer-library-preview" />;
   }
 
   return (
