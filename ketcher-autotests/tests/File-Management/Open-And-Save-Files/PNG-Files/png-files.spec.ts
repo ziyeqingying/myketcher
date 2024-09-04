@@ -51,4 +51,88 @@ test.describe('Saving in .png files', () => {
       await takeEditorScreenshot(page);
     });
   }
+
+  test(`Verify it is possible to export the simple schema with retrosynthetic arrow to PNG`, async ({
+    page,
+  }) => {
+    await openFileAndAddToCanvas(
+      'KET/simple-schema-with-retrosynthetic-arrow.ket',
+      page,
+    );
+
+    await selectTopPanelButton(TopPanelButton.Save, page);
+    await clickOnFileFormatDropdown(page);
+    await page.getByRole('option', { name: 'PNG Image' }).click();
+    await takeEditorScreenshot(page);
+  });
+
+  test(`Verify it is possible to export the schema with retrosynthetic, angel arrows and plus to PNG`, async ({
+    page,
+  }) => {
+    await openFileAndAddToCanvas(
+      'KET/schema-with-retrosynthetic-angel-arrows-and-plus.ket',
+      page,
+    );
+
+    await selectTopPanelButton(TopPanelButton.Save, page);
+    await clickOnFileFormatDropdown(page);
+    await page.getByRole('option', { name: 'PNG Image' }).click();
+    await takeEditorScreenshot(page);
+  });
+
+  test(`Verify it is possible to export the schema with vertical retrosynthetic arrow to PNG`, async ({
+    page,
+  }) => {
+    await openFileAndAddToCanvas(
+      'KET/schema-with-vertical-retrosynthetic-arrow.ket',
+      page,
+    );
+
+    await selectTopPanelButton(TopPanelButton.Save, page);
+    await clickOnFileFormatDropdown(page);
+    await page.getByRole('option', { name: 'PNG Image' }).click();
+    await takeEditorScreenshot(page);
+  });
+
+  test(`Verify it is possible to export the schema with two retrosynthetic arrows to PNG`, async ({
+    page,
+  }) => {
+    await openFileAndAddToCanvas(
+      'KET/schema-with-two-retrosynthetic-arrows.ket',
+      page,
+    );
+
+    await selectTopPanelButton(TopPanelButton.Save, page);
+    await clickOnFileFormatDropdown(page);
+    await page.getByRole('option', { name: 'PNG Image' }).click();
+    await takeEditorScreenshot(page);
+  });
+
+  test(`Verify it is possible to export the schema with diagonaly retrosynthetic arrow to PNG`, async ({
+    page,
+  }) => {
+    await openFileAndAddToCanvas(
+      'KET/schema-with-diagonal-retrosynthetic-arrow.ket',
+      page,
+    );
+
+    await selectTopPanelButton(TopPanelButton.Save, page);
+    await clickOnFileFormatDropdown(page);
+    await page.getByRole('option', { name: 'PNG Image' }).click();
+    await takeEditorScreenshot(page);
+  });
+
+  test(`Verify it is possible to export the schema reverse retrosynthetic arrow and pluses to PNG`, async ({
+    page,
+  }) => {
+    await openFileAndAddToCanvas(
+      'KET/schema-with-reverse-retrosynthetic-arrow-and-pluses.ket',
+      page,
+    );
+
+    await selectTopPanelButton(TopPanelButton.Save, page);
+    await clickOnFileFormatDropdown(page);
+    await page.getByRole('option', { name: 'PNG Image' }).click();
+    await takeEditorScreenshot(page);
+  });
 });
