@@ -76,7 +76,7 @@ export class RenderStruct {
         return;
       }
 
-      const preparedStruct = this.prepareStruct(struct);
+      const preparedStruct = this.prepareStruct(struct.clone());
       preparedStruct.initHalfBonds();
       preparedStruct.initNeighbors();
       preparedStruct.setImplicitHydrogen();
