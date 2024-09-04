@@ -36,8 +36,8 @@ export enum MeasurementUnits {
 }
 
 export enum ImageResolution {
-  high = '600',
-  low = '72',
+  high = 600,
+  low = 72,
 }
 
 const editor: {
@@ -89,13 +89,8 @@ const render: {
   bondThicknessUnit: ExtendedSchema;
   stereoBondWidth: ExtendedSchema;
   stereoBondWidthUnit: ExtendedSchema;
-  bondLength: ExtendedSchema;
-  bondLengthUnit: ExtendedSchema;
-  reactionComponentMarginSize: ExtendedSchema;
-  reactionComponentMarginSizeUnit: ExtendedSchema;
   hashSpacing: ExtendedSchema;
   hashSpacingUnit: ExtendedSchema;
-  imageResolution: ExtendedSchema;
 } = {
   showValenceWarnings: {
     title: 'Show valence warnings',
@@ -280,47 +275,17 @@ const render: {
     enumNames: Object.values(MeasurementUnits),
     default: MeasurementUnits.Px,
   },
-  bondLength: {
-    title: 'Bond length',
-    type: 'number',
-    default: 40,
-    minimum: 1,
-  },
-  bondLengthUnit: {
-    title: 'Bond length unit',
-    enum: Object.values(MeasurementUnits),
-    enumNames: Object.values(MeasurementUnits),
-    default: MeasurementUnits.Px,
-  },
-  reactionComponentMarginSize: {
-    title: 'Reaction component margin size',
-    type: 'number',
-    default: 20, // half of bond length
-    minimum: 1,
-  },
-  reactionComponentMarginSizeUnit: {
-    title: 'Reaction component margin size unit',
-    enum: Object.values(MeasurementUnits),
-    enumNames: Object.values(MeasurementUnits),
-    default: MeasurementUnits.Px,
-  },
   hashSpacing: {
     title: 'Hash spacing',
     type: 'number',
     default: 1.2,
-    minimum: 0,
+    minimum: 0.1,
   },
   hashSpacingUnit: {
     title: 'Hash spacing unit',
     enum: Object.values(MeasurementUnits),
     enumNames: Object.values(MeasurementUnits),
     default: MeasurementUnits.Px,
-  },
-  imageResolution: {
-    title: 'Image resolution',
-    enum: Object.values(ImageResolution),
-    enumNames: Object.keys(ImageResolution),
-    default: ImageResolution.low,
   },
 };
 
@@ -331,6 +296,11 @@ const server: {
   'gross-formula-add-rsites': ExtendedSchema;
   'gross-formula-add-isotopes': ExtendedSchema;
   'dearomatize-on-load': ExtendedSchema;
+  'bond-length-unit': ExtendedSchema;
+  'bond-length': ExtendedSchema;
+  'reaction-component-margin-size-unit': ExtendedSchema;
+  'reaction-component-margin-size': ExtendedSchema;
+  'image-resolution': ExtendedSchema;
 } = {
   'dearomatize-on-load': {
     title: 'dearomatize-on-load',
@@ -367,6 +337,36 @@ const server: {
     type: 'boolean',
     description: 'slider',
     default: true,
+  },
+  'bond-length': {
+    title: 'Bond length',
+    type: 'number',
+    default: 40,
+    minimum: 1,
+  },
+  'bond-length-unit': {
+    title: 'Bond length unit',
+    enum: Object.values(MeasurementUnits),
+    enumNames: Object.values(MeasurementUnits),
+    default: MeasurementUnits.Px,
+  },
+  'reaction-component-margin-size': {
+    title: 'Reaction component margin size',
+    type: 'number',
+    default: 20, // half of bond length
+    minimum: 1,
+  },
+  'reaction-component-margin-size-unit': {
+    title: 'Reaction component margin size unit',
+    enum: Object.values(MeasurementUnits),
+    enumNames: Object.values(MeasurementUnits),
+    default: MeasurementUnits.Px,
+  },
+  'image-resolution': {
+    title: 'Image resolution',
+    enum: Object.values(ImageResolution).filter((res) => !isNaN(Number(res))),
+    enumNames: Object.keys(ImageResolution).filter((res) => isNaN(Number(res))),
+    default: ImageResolution.low,
   },
 };
 
